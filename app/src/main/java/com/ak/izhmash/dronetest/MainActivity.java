@@ -1,5 +1,6 @@
 package com.ak.izhmash.dronetest;
 
+import android.graphics.PorterDuff;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -28,6 +29,7 @@ public class MainActivity extends ActionBarActivity {
     Button btnMeasure;
     TextView tvStatus;
     TextView tvTemperature;
+    TextView tvHumidity;
 
     // Sensordrone Objects
     Drone myDrone;
@@ -44,11 +46,23 @@ public class MainActivity extends ActionBarActivity {
 
         tvStatus = (TextView) findViewById(R.id.main_tv_connection_status);
         tvTemperature = (TextView) findViewById(R.id.main_tv_temperature);
+        tvHumidity = (TextView) findViewById(R.id.main_tv_humidity);
+
+        findViewById(R.id.main_btn_connect).setClickable(true);
+        findViewById(R.id.main_btn_connect).setEnabled(true);
+        findViewById(R.id.main_btn_connect).getBackground().setColorFilter(0xFF00FF00, PorterDuff.Mode.MULTIPLY);
+        findViewById(R.id.main_btn_disconnect).setClickable(false);
+        findViewById(R.id.main_btn_disconnect).setEnabled(false);
+        findViewById(R.id.main_btn_disconnect).getBackground().setColorFilter(0x00000000, PorterDuff.Mode.MULTIPLY);
+        findViewById(R.id.main_btn_measure).setClickable(false);
+        findViewById(R.id.main_btn_measure).setEnabled(false);
+        findViewById(R.id.main_btn_measure).getBackground().setColorFilter(0x00000000, PorterDuff.Mode.MULTIPLY);
 
         btnConnect = (Button) findViewById(R.id.main_btn_connect);
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (myDrone.isConnected) {
                     genericDialog("Alert", "You are already connected to a SensorDrone");
                 } else {
@@ -63,9 +77,19 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 if (myDrone.isConnected) {
                     myDrone.disableTemperature();
+                    myDrone.disableHumidity();
                     myDrone.setLEDs(0, 0, 0);
                     myDrone.disconnect();
-                } else {
+                    findViewById(R.id.main_btn_connect).setClickable(true);
+                    findViewById(R.id.main_btn_connect).setEnabled(true);
+                    findViewById(R.id.main_btn_connect).getBackground().setColorFilter(0xFF00FF00, PorterDuff.Mode.MULTIPLY);
+                    findViewById(R.id.main_btn_disconnect).setClickable(false);
+                    findViewById(R.id.main_btn_disconnect).setEnabled(false);
+                    findViewById(R.id.main_btn_disconnect).getBackground().setColorFilter(0x00000000, PorterDuff.Mode.MULTIPLY);
+                    findViewById(R.id.main_btn_measure).setClickable(false);
+                    findViewById(R.id.main_btn_measure).setEnabled(false);
+                    findViewById(R.id.main_btn_measure).getBackground().setColorFilter(0x00000000, PorterDuff.Mode.MULTIPLY);
+                } else if (findViewById(R.id.main_btn_disconnect).isClickable()) {
                     genericDialog("Alert", "You are not connected to a SensorDrone");
                 }
             }
@@ -77,10 +101,13 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 if (myDrone.isConnected) {
                     myDrone.measureTemperature();
+                    myDrone.measureHumidity();
                     myDrone.setLEDs(238, 130, 238);
-                } else if (myDrone.isConnected && !myDrone.temperatureStatus) {
+                } else if (myDrone.isConnected && !myDrone.temperatureStatus ) {
                     genericDialog("Alert", "The temperature sensor has not been enabled");
-                } else {
+                } else if (myDrone.isConnected && !myDrone.humidityStatus ) {
+                        genericDialog("Alert", "The humidity sensor has not been enabled");
+                } else if (findViewById(R.id.main_btn_measure).isClickable()) {
                     genericDialog("Alert", "You are not currently connected to a Sensordrone");
                 }
             }
@@ -91,21 +118,42 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void parseEvent(DroneEventObject droneEventObject) {
                 if (droneEventObject.matches(DroneEventObject.droneEventType.CONNECTED)) {
+                    findViewById(R.id.main_btn_connect).setClickable(false);
+                    findViewById(R.id.main_btn_connect).setEnabled(false);
+                    findViewById(R.id.main_btn_connect).getBackground().setColorFilter(0x00000000, PorterDuff.Mode.MULTIPLY);
+                    findViewById(R.id.main_btn_disconnect).setClickable(true);
+                    findViewById(R.id.main_btn_disconnect).setEnabled(true);
+                    findViewById(R.id.main_btn_disconnect).getBackground().setColorFilter(0xFF00FF00, PorterDuff.Mode.MULTIPLY);
+                    findViewById(R.id.main_btn_measure).setClickable(true);
+                    findViewById(R.id.main_btn_measure).setEnabled(true);
+                    findViewById(R.id.main_btn_measure).getBackground().setColorFilter(0xFF00FF00, PorterDuff.Mode.MULTIPLY);
                     myDrone.setLEDs(0, 0, 126);
                     updateTextViewFromUI(tvStatus, "Connected");
                     myDrone.enableTemperature();
+                    myDrone.enableHumidity();
                 } else if (droneEventObject.matches(DroneEventObject.droneEventType.DISCONNECTED)) {
+
                     updateTextViewFromUI(tvStatus, "Not connected");
                 } else if (droneEventObject.matches(DroneEventObject.droneEventType.CONNECTION_LOST)) {
                     updateTextViewFromUI(tvStatus, "Connection lost");
                     uiToast("Connection lost");
                 } else if (droneEventObject.matches(DroneEventObject.droneEventType.TEMPERATURE_ENABLED)) {
                     myDrone.measureTemperature();
+                } else if (droneEventObject.matches(DroneEventObject.droneEventType.HUMIDITY_ENABLED)) {
+                    myDrone.measureHumidity();
                 } else if (droneEventObject.matches(DroneEventObject.droneEventType.TEMPERATURE_MEASURED)) {
                     String temp = String.format("%.2f \u00b0C", myDrone.temperature_Celsius);
                     updateTextViewFromUI(tvTemperature, temp);
                     uiToast("Temperature updated");
+                } else if (droneEventObject.matches(DroneEventObject.droneEventType.HUMIDITY_MEASURED)) {
+                    //uiToast("Made it!");  //debug
+                    String s = "%";
+                    String humid = String.format("%.2f %%", myDrone.humidity_Percent);
+                    updateTextViewFromUI(tvHumidity, humid);
+                    uiToast("Humidity updated");
                 } else if (droneEventObject.matches(DroneEventObject.droneEventType.TEMPERATURE_DISABLED)) {
+                    //Not in use
+                } else if (droneEventObject.matches(DroneEventObject.droneEventType.HUMIDITY_DISABLED)) {
                     //Not in use
                 }
             }

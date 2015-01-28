@@ -7,31 +7,60 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/label_font"
         android:text="Temperature"
-        android:id="@+id/main_tv_label" android:layout_centerHorizontal="true" android:layout_alignParentTop="true"/>
+        android:id="@+id/temperature_tv_label"
+        android:layout_marginTop="93dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/label_font"
+        android:textColor="@color/red"
         android:text="N/A"
-        android:id="@+id/main_tv_temperature" android:layout_centerHorizontal="true"
-        android:layout_below="@+id/main_tv_label"/>
+        android:id="@+id/main_tv_temperature"
+        android:layout_below="@+id/temperature_tv_label"
+        android:layout_centerHorizontal="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/label_font"
+        android:text="Humidity"
+        android:id="@+id/humidity_tv_label"
+        android:layout_below="@+id/main_tv_temperature"
+        android:layout_centerHorizontal="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/label_font"
+        android:textColor="@color/red"
+        android:text="N/A"
+        android:id="@+id/main_tv_humidity"
+        android:layout_below="@+id/humidity_tv_label"
+        android:layout_centerHorizontal="true" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Measure"
-        android:id="@+id/main_btn_measure" android:layout_centerHorizontal="true" android:layout_centerVertical="true"/>
+        android:id="@+id/main_btn_measure"
+        android:layout_marginTop="81dp"
+        android:layout_below="@+id/main_tv_humidity"
+        android:layout_centerHorizontal="true" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Connect"
-        android:id="@+id/main_btn_connect" android:layout_centerHorizontal="true"
-        android:layout_below="@+id/main_btn_measure"/>
+        android:id="@+id/main_btn_connect"
+        android:layout_below="@+id/main_btn_measure"
+        android:layout_centerHorizontal="true" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Disconnect"
-        android:id="@+id/main_btn_disconnect" android:layout_centerHorizontal="true"
-        android:layout_below="@+id/main_btn_connect"/>
+        android:id="@+id/main_btn_disconnect"
+        android:layout_below="@+id/main_btn_connect"
+        android:layout_centerHorizontal="true" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
