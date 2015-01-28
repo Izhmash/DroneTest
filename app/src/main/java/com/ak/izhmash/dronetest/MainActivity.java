@@ -116,7 +116,8 @@ public class MainActivity extends ActionBarActivity {
                     uiToast("Temperature updated");
                 } else if (droneEventObject.matches(DroneEventObject.droneEventType.HUMIDITY_MEASURED)) {
                     //uiToast("Made it!");  //debug
-                    String humid = String.format("%.2f ", myDrone.humidity_Percent);
+                    String s = "%";
+                    String humid = String.format("%.2f %%", myDrone.humidity_Percent);
                     updateTextViewFromUI(tvHumidity, humid);
                     uiToast("Humidity updated");
                 } else if (droneEventObject.matches(DroneEventObject.droneEventType.TEMPERATURE_DISABLED)) {
