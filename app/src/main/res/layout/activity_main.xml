@@ -8,13 +8,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Temperature"
-        android:id="@+id/main_tv_label" android:layout_centerHorizontal="true" android:layout_alignParentTop="true"/>
+        android:id="@+id/temperature_tv_label" android:layout_centerHorizontal="true" android:layout_alignParentTop="true"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="N/A"
         android:id="@+id/main_tv_temperature" android:layout_centerHorizontal="true"
-        android:layout_below="@+id/main_tv_label"/>
+        android:layout_below="@+id/temperature_tv_label"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Humidity"
+        android:id="@+id/humidity_tv_label" android:layout_centerHorizontal="true" android:layout_below="@+id/main_tv_temperature"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="N/A"
+        android:id="@+id/main_tv_humidity" android:layout_centerHorizontal="true"
+        android:layout_below="@+id/humidity_tv_label"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
