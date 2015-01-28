@@ -1,5 +1,6 @@
 package com.ak.izhmash.dronetest;
 
+import android.graphics.PorterDuff;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -47,10 +48,21 @@ public class MainActivity extends ActionBarActivity {
         tvTemperature = (TextView) findViewById(R.id.main_tv_temperature);
         tvHumidity = (TextView) findViewById(R.id.main_tv_humidity);
 
+        findViewById(R.id.main_btn_connect).setClickable(true);
+        findViewById(R.id.main_btn_connect).setEnabled(true);
+        findViewById(R.id.main_btn_connect).getBackground().setColorFilter(0xFF00FF00, PorterDuff.Mode.MULTIPLY);
+        findViewById(R.id.main_btn_disconnect).setClickable(false);
+        findViewById(R.id.main_btn_disconnect).setEnabled(false);
+        findViewById(R.id.main_btn_disconnect).getBackground().setColorFilter(0x00000000, PorterDuff.Mode.MULTIPLY);
+        findViewById(R.id.main_btn_measure).setClickable(false);
+        findViewById(R.id.main_btn_measure).setEnabled(false);
+        findViewById(R.id.main_btn_measure).getBackground().setColorFilter(0x00000000, PorterDuff.Mode.MULTIPLY);
+
         btnConnect = (Button) findViewById(R.id.main_btn_connect);
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (myDrone.isConnected) {
                     genericDialog("Alert", "You are already connected to a SensorDrone");
                 } else {
@@ -68,7 +80,16 @@ public class MainActivity extends ActionBarActivity {
                     myDrone.disableHumidity();
                     myDrone.setLEDs(0, 0, 0);
                     myDrone.disconnect();
-                } else {
+                    findViewById(R.id.main_btn_connect).setClickable(true);
+                    findViewById(R.id.main_btn_connect).setEnabled(true);
+                    findViewById(R.id.main_btn_connect).getBackground().setColorFilter(0xFF00FF00, PorterDuff.Mode.MULTIPLY);
+                    findViewById(R.id.main_btn_disconnect).setClickable(false);
+                    findViewById(R.id.main_btn_disconnect).setEnabled(false);
+                    findViewById(R.id.main_btn_disconnect).getBackground().setColorFilter(0x00000000, PorterDuff.Mode.MULTIPLY);
+                    findViewById(R.id.main_btn_measure).setClickable(false);
+                    findViewById(R.id.main_btn_measure).setEnabled(false);
+                    findViewById(R.id.main_btn_measure).getBackground().setColorFilter(0x00000000, PorterDuff.Mode.MULTIPLY);
+                } else if (findViewById(R.id.main_btn_disconnect).isClickable()) {
                     genericDialog("Alert", "You are not connected to a SensorDrone");
                 }
             }
@@ -86,7 +107,7 @@ public class MainActivity extends ActionBarActivity {
                     genericDialog("Alert", "The temperature sensor has not been enabled");
                 } else if (myDrone.isConnected && !myDrone.humidityStatus ) {
                         genericDialog("Alert", "The humidity sensor has not been enabled");
-                } else {
+                } else if (findViewById(R.id.main_btn_measure).isClickable()) {
                     genericDialog("Alert", "You are not currently connected to a Sensordrone");
                 }
             }
@@ -97,11 +118,21 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void parseEvent(DroneEventObject droneEventObject) {
                 if (droneEventObject.matches(DroneEventObject.droneEventType.CONNECTED)) {
+                    findViewById(R.id.main_btn_connect).setClickable(false);
+                    findViewById(R.id.main_btn_connect).setEnabled(false);
+                    findViewById(R.id.main_btn_connect).getBackground().setColorFilter(0x00000000, PorterDuff.Mode.MULTIPLY);
+                    findViewById(R.id.main_btn_disconnect).setClickable(true);
+                    findViewById(R.id.main_btn_disconnect).setEnabled(true);
+                    findViewById(R.id.main_btn_disconnect).getBackground().setColorFilter(0xFF00FF00, PorterDuff.Mode.MULTIPLY);
+                    findViewById(R.id.main_btn_measure).setClickable(true);
+                    findViewById(R.id.main_btn_measure).setEnabled(true);
+                    findViewById(R.id.main_btn_measure).getBackground().setColorFilter(0xFF00FF00, PorterDuff.Mode.MULTIPLY);
                     myDrone.setLEDs(0, 0, 126);
                     updateTextViewFromUI(tvStatus, "Connected");
                     myDrone.enableTemperature();
                     myDrone.enableHumidity();
                 } else if (droneEventObject.matches(DroneEventObject.droneEventType.DISCONNECTED)) {
+
                     updateTextViewFromUI(tvStatus, "Not connected");
                 } else if (droneEventObject.matches(DroneEventObject.droneEventType.CONNECTION_LOST)) {
                     updateTextViewFromUI(tvStatus, "Connection lost");
